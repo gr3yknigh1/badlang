@@ -1,0 +1,5 @@
+*.o
+
+/badcomp
+
+/compile_commands.json
