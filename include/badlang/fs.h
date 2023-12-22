@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-bool bl_fs_exists(const char *path);
-uint64_t bl_fs_file_size(FILE *fd);
+bool fs_exists(const char *path);
+uint64_t fs_file_size(FILE *fd);
 
 #endif //  BADLANG_FS_H_

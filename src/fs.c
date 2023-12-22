@@ -13,12 +13,12 @@
 #include "badlang/rc.h"
 
 bool
-bl_fs_is_exists(const char *p) {
-    return access(p, F_OK) == RC_OK;
+fs_exists(const char *path) {
+    return access(path, F_OK) == RC_OK;
 }
 
 unsigned long
-bl_fs_file_size(FILE *fd) {
+fs_file_size(FILE *fd) {
     unsigned long size = 0;
 
     fseek(fd, 0, SEEK_END);

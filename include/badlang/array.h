@@ -1,10 +1,8 @@
 /*
  * Static array library
- *
  * */
-
-#ifndef BL_ARRAY_H_
-#define BL_ARRAY_H_
+#ifndef BADLANG_ARRAY_H_
+#define BADLANG_ARRAY_H_
 
 #define ARRAY(__NAME, __SIZE, __TYPE)                                          \
     struct {                                                                   \
@@ -22,4 +20,4 @@
 #define ARRAY_FOR(__ARRAY, __IDX)                                              \
     for (unsigned long __IDX = 0; __IDX < ARRAY_LEN(__ARRAY); ++__IDX)
 
-#endif // BL_ARRAY_H_
+#endif // BADLANG_ARRAY_H_

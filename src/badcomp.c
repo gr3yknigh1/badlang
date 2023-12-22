@@ -9,7 +9,6 @@
 #include <string.h>
 
 #include "badlang/bits.h"
-#include "badlang/logs.h"
 #include "badlang/rc.h"
 
 enum opt {
