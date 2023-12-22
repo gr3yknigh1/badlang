@@ -21,7 +21,7 @@ default: all
 # ============== [ COMPILATION ] ==============
 #
 CC      := gcc
-CFLAGS  := -Wall -Wextra -pedantic -std=c11 -I $(SRCROOT) -I $(SRCROOT)/s21
+CFLAGS  := -Wall -Wextra -pedantic -std=c11 -I $(SRCROOT)/include
 LDFLAGS :=
 
 ifeq ($(BUILD_CONFIG), DEBUG)
@@ -46,11 +46,12 @@ include $(SRCROOT)/make/tools.mk
 # ================== [ BADCOMP ] ===================
 #
 #
-BADCOMP_DIR   := $(SRCROOT)
+BADCOMP_DIR   := $(SRCROOT)/src
 BADCOMP_BIN   := badcomp
 
 BADCOMP_SRCS  := \
-	$(BADCOMP_DIR)/badcomp.c
+	$(BADCOMP_DIR)/badcomp.c \
+	$(BADCOMP_DIR)/fs.c
 
 BADCOMP_OBJS  := $(patsubst $(BADCOMP_DIR)/%.c, $(BADCOMP_DIR)/%.o, $(BADCOMP_SRCS))
 
