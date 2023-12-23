@@ -7,7 +7,7 @@
 #define ARRAY(__NAME, __SIZE, __TYPE)                                          \
     struct {                                                                   \
         __TYPE _items[(__SIZE)];                                               \
-        unsigned long _length;                                                      \
+        unsigned long _length;                                                 \
     } __NAME
 
 #define ARRAY_ADD(__ARRAY, __ITEM)                                             \

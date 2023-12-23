@@ -1,0 +1,48 @@
+import std.io;
+import std.os;
+import std.asm;
+
+Memory :: {
+
+    Allocate :: (sz: usize) -> Ptr {
+        os :: std.os;
+
+        comptime if (os.platform == os.PLATFORM_WIN32) {
+
+        } else if (os.platform == os.PLATFORM_LINUX) {
+            asm intel x86_64 {
+                mov    rax, 1
+                mov    rdi, 2
+                syscall
+            }
+        }
+    }
+
+    Free :: (p: Ptr) {
+    }
+}
+
+Math :: {
+    Vec2 :: struct {
+        x: f32;
+        y: f32;
+    }
+
+    Add :: (self: mutable &Vec2, other: &Vec2) {
+        self.x += other.x;
+        self.y += other.y;
+    }
+
+    Sqrt :: (x: i32, power: u64) -> f32 {
+        return 2;
+    }
+}
+
+Main :: () -> u32 {
+    Vec2 :: Math::Vec2;
+
+    mutable pos: Vec2;
+    pos.Add({3, 3});
+
+    return 0;
+}

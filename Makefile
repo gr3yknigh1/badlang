@@ -51,7 +51,10 @@ BADCOMP_BIN   := badcomp
 
 BADCOMP_SRCS  := \
 	$(BADCOMP_DIR)/badcomp.c \
-	$(BADCOMP_DIR)/fs.c
+	$(BADCOMP_DIR)/fs.c \
+	$(BADCOMP_DIR)/lexer.c \
+	$(BADCOMP_DIR)/str.c \
+	$(BADCOMP_DIR)/token.c
 
 BADCOMP_OBJS  := $(patsubst $(BADCOMP_DIR)/%.c, $(BADCOMP_DIR)/%.o, $(BADCOMP_SRCS))
 
