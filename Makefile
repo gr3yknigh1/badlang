@@ -21,7 +21,7 @@ default: all
 # ============== [ COMPILATION ] ==============
 #
 CC      := gcc
-CFLAGS  := -Wall -Wextra -pedantic -std=c11 -I $(SRCROOT)/include
+CFLAGS  := -Wall -Wextra -pedantic -std=c2x -I $(SRCROOT)/include
 LDFLAGS :=
 
 ifeq ($(BUILD_CONFIG), DEBUG)
@@ -38,6 +38,10 @@ ifeq ($(USE_SANITIZE), UNDEFINE)
     CFLAGS += -fsanitize=undefine
 endif
 
+ifeq ($(USE_SANITIZE), LEAK)
+    CFLAGS += -fsanitize=leak
+endif
+
 
 include $(SRCROOT)/make/os.mk
 include $(SRCROOT)/make/tools.mk
@@ -50,10 +54,12 @@ BADCOMP_DIR   := $(SRCROOT)/src
 BADCOMP_BIN   := badcomp
 
 BADCOMP_SRCS  := \
+	$(BADCOMP_DIR)/ast.c \
 	$(BADCOMP_DIR)/badcomp.c \
 	$(BADCOMP_DIR)/fs.c \
 	$(BADCOMP_DIR)/lexer.c \
 	$(BADCOMP_DIR)/str.c \
+	$(BADCOMP_DIR)/memory.c \
 	$(BADCOMP_DIR)/token.c
 
 BADCOMP_OBJS  := $(patsubst $(BADCOMP_DIR)/%.c, $(BADCOMP_DIR)/%.o, $(BADCOMP_SRCS))

@@ -3,17 +3,20 @@
  *
  * */
 #include <getopt.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "badlang/array.h"
+#include "badlang/ast.h"
 #include "badlang/bits.h"
 #include "badlang/fs.h"
 #include "badlang/lexer.h"
 #include "badlang/logs.h"
+#include "badlang/memory.h"
 #include "badlang/rc.h"
+#include "badlang/str.h"
+#include "badlang/types.h"
 
 #define SOURCES_MAX_COUNT 32
 #define TOKENS_MAX_COUNT 1024
@@ -33,22 +36,31 @@ static enum rc
 badlang_compile(const char *source, size_t size) {
     struct lexer lexer = lexer_init(source, size);
     struct token *tokens = calloc(TOKENS_MAX_COUNT, sizeof(struct token));
-    lexer_parse(&lexer, tokens);
+    u64 tokens_count = lexer_parse(&lexer, tokens);
+
+    struct ast ast = ast_init();
+    struct ast_node ast_root = ast_node_init(AST_MODULE, null, null, null);
+    ast_parse(&ast, tokens, tokens_count);
+
+    ast_node_print(&ast_root, NULL, false);
 
     struct token *token = tokens;
-
     char *token_value = NULL;
-
     while (token->type != TOKEN_EOF) {
 
         token_value = realloc(token_value, token->value.len + 1);
-        memcpy(token_value, token->value.buffer, token->value.len);
+        memory_copy(token_value, token->value.buf, token->value.len);
         token_value[token->value.len] = '\0';
 
         printf("Token(value=[%s] type=%s)\n", token_value,
                token_type_to_str(token->type));
+
+        token_free(token);
         token++;
     }
+
+    free_if_not_null(token_value);
+    free_if_not_null(tokens);
 
     return RC_OK;
 }
@@ -66,8 +78,9 @@ badlang_compile_file(const char *source_file) {
     }
 
     size_t file_size = fs_file_size(f);
-    char *file_content = malloc(file_size * sizeof(char));
+    char *file_content = malloc(file_size * sizeof(char) + 1);
     fread(file_content, file_size, 1, f);
+    file_content[file_size] = '\0';
 
     enum rc rc = badlang_compile(file_content, file_size);
 

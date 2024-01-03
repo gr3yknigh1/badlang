@@ -12,7 +12,9 @@ enum token_type {
 
     TOKEN_RARROW,
 
-    TOKEN_OP_COMPEQ,
+    TOKEN_OP_ASSIGNMENT,
+
+    TOKEN_OP_COMPASSIGNMENT,
     TOKEN_OP_COMPTIME,
 
     TOKEN_LPAREN,
@@ -32,6 +34,8 @@ struct token {
 };
 
 struct token token_init(struct str value, enum token_type type);
+
+void token_free(struct token *t);
 
 const char *token_type_to_str(int token_type);
 

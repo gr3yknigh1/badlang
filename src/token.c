@@ -1,9 +1,10 @@
 #include "badlang/token.h"
 #include "badlang/marcos.h"
+#include "badlang/str.h"
 
-
-struct token token_init(struct str value, enum token_type type) {
-    return (struct token) {
+struct token
+token_init(struct str value, enum token_type type) {
+    return (struct token){
         .value = value,
         .type = type,
     };
@@ -20,8 +21,10 @@ token_type_to_str(int token_type) {
         return STRINGIFY(TOKEN_COLON);
     case TOKEN_RARROW:
         return STRINGIFY(TOKEN_RARROW);
-    case TOKEN_OP_COMPEQ:
-        return STRINGIFY(TOKEN_OP_COMPEQ);
+    case TOKEN_OP_ASSIGNMENT:
+        return STRINGIFY(TOKEN_OP_ASSIGNMENT);
+    case TOKEN_OP_COMPASSIGNMENT:
+        return STRINGIFY(TOKEN_OP_COMPASSIGNMENT);
     case TOKEN_OP_COMPTIME:
         return STRINGIFY(TOKEN_OP_COMPTIME);
     case TOKEN_LPAREN:
@@ -40,4 +43,9 @@ token_type_to_str(int token_type) {
         return STRINGIFY(TOKEN_EOF);
     }
     return "UNKNOWN";
+}
+
+void
+token_free(struct token *t) {
+    str_free(&t->value);
 }

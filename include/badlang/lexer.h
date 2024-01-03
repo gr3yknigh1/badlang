@@ -2,6 +2,7 @@
 #define BADLANG_LEXER_H_
 
 #include "badlang/token.h"
+#include "badlang/types.h"
 
 struct lexer {
     const char *source;
@@ -10,13 +11,16 @@ struct lexer {
     unsigned long long size;
 };
 
-struct lexer lexer_init(const char *source, size_t size);
+struct lexer lexer_init(const char *source, usize size);
 
-const char *lexer_peek(struct lexer *lexer, size_t offset);
+const char *lexer_peek(const struct lexer *lexer, usize offset);
 
-void lexer_parse(struct lexer *lexer, struct token *tokens);
-void lexer_parse_id(struct lexer *lexer, struct token *token);
-void lexer_parse_num(struct lexer *lexer, struct token *token);
+bool lexer_is_source_end(const struct lexer *lexer);
+
+u64 lexer_parse(struct lexer *lexer, struct token *tokens);
+
+struct token lexer_parse_id(struct lexer *lexer);
+struct token lexer_parse_num(struct lexer *lexer);
 
 void lexer_advance(struct lexer *lexer);
 void lexer_skipwhitespace(struct lexer *lexer);

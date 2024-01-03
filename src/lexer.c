@@ -3,10 +3,9 @@
 #include "badlang/token.h"
 
 #include <ctype.h>
-#include <stdlib.h>
 
 struct lexer
-lexer_init(const char *source, size_t size) {
+lexer_init(const char *source, usize size) {
     return (struct lexer){
         .source = source,
         .curchar = *source,
@@ -15,8 +14,9 @@ lexer_init(const char *source, size_t size) {
     };
 }
 
-const char *lexer_peek(struct lexer *lexer, size_t offset) {
-    size_t new_pos = lexer->pos + offset;
+const char *
+lexer_peek(const struct lexer *lexer, usize offset) {
+    usize new_pos = lexer->pos + offset;
 
     if (new_pos >= lexer->size) {
         return lexer->source + lexer->size;
@@ -29,35 +29,73 @@ const char *lexer_peek(struct lexer *lexer, size_t offset) {
     return lexer->source + offset;
 }
 
-void
+bool
+lexer_is_source_end(const struct lexer *lexer) {
+    return lexer->curchar == '\0';
+}
+
+u64
 lexer_parse(struct lexer *lexer, struct token *tokens) {
     struct token *curtoken = tokens;
 
-    while (lexer->curchar != '\0') {
+    while (!lexer_is_source_end(lexer)) {
         lexer_skipwhitespace(lexer);
 
         if (isalpha(lexer->curchar)) {
-            lexer_parse_id(lexer, curtoken);
-            curtoken++;
+            *curtoken++ = lexer_parse_id(lexer);
             continue;
         }
 
-
-
         if (isdigit(lexer->curchar)) {
-            lexer_parse_num(lexer, curtoken);
-            curtoken++;
+            *curtoken++ = lexer_parse_num(lexer);
             continue;
+        }
+
+        switch (lexer->curchar) {
+        case ':':
+            if (lexer->source[lexer->pos + 1] == ':') {
+                *curtoken++ =
+                    token_init(str_init_0("::"), TOKEN_OP_COMPASSIGNMENT);
+                lexer_advance(lexer);
+            } else {
+                *curtoken++ = token_init(str_init_0(":"), TOKEN_COLON);
+            }
+            break;
+        case '=':
+            *curtoken++ = token_init(str_init_0("="), TOKEN_OP_ASSIGNMENT);
+            break;
+        case '(':
+            *curtoken++ = token_init(str_init_0("("), TOKEN_LPAREN);
+            break;
+        case ')':
+            *curtoken++ = token_init(str_init_0(")"), TOKEN_RPAREN);
+            break;
+        case '-':
+            if (lexer->source[lexer->pos + 1] == '>') {
+                *curtoken++ = token_init(str_init_0("->"), TOKEN_RARROW);
+                lexer_advance(lexer);
+            }
+            break;
+        case '{':
+            *curtoken++ = token_init(str_init_0("{"), TOKEN_LCURLY);
+            break;
+        case '}':
+            *curtoken++ = token_init(str_init_0("}"), TOKEN_RCURLY);
+            break;
+        case ';':
+            *curtoken++ = token_init(str_init_0(";"), TOKEN_SEMI);
+            break;
         }
 
         lexer_advance(lexer);
     }
 
     *curtoken = token_init(str_init(), TOKEN_EOF);
+    return curtoken - tokens;
 }
 
-void
-lexer_parse_id(struct lexer *lexer, struct token *token) {
+struct token
+lexer_parse_id(struct lexer *lexer) {
 
     const char *id_begin = lexer->source + lexer->pos;
 
@@ -67,11 +105,11 @@ lexer_parse_id(struct lexer *lexer, struct token *token) {
 
     const char *id_end = lexer->source + lexer->pos;
 
-    *token = token_init(str_init_1(id_begin, id_end - id_begin), TOKEN_ID);
+    return token_init(str_init_1(id_begin, id_end - id_begin), TOKEN_ID);
 }
 
-void
-lexer_parse_num(struct lexer *lexer, struct token *token) {
+struct token
+lexer_parse_num(struct lexer *lexer) {
 
     const char *id_begin = lexer->source + lexer->pos;
 
@@ -81,9 +119,8 @@ lexer_parse_num(struct lexer *lexer, struct token *token) {
 
     const char *id_end = lexer->source + lexer->pos;
 
-    *token = token_init(str_init_1(id_begin, id_end - id_begin), TOKEN_LIT_NUM);
+    return token_init(str_init_1(id_begin, id_end - id_begin), TOKEN_LIT_NUM);
 }
-
 
 void
 lexer_advance(struct lexer *lexer) {
