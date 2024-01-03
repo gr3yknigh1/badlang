@@ -1,18 +1,9 @@
-#include "badlang/token.h"
-#include "badlang/marcos.h"
-#include "badlang/str.h"
+#include "badlang/Token.hpp"
+#include "badlang/Macros.hpp"
 
-struct token
-token_init(struct str value, enum token_type type) {
-    return (struct token){
-        .value = value,
-        .type = type,
-    };
-}
-
-const char *
-token_type_to_str(int token_type) {
-    switch (token_type) {
+std::string_view
+TokenTypeToString(TokenType type) {
+    switch (type) {
     case TOKEN_ID:
         return STRINGIFY(TOKEN_ID);
     case TOKEN_SEMI:
@@ -41,11 +32,12 @@ token_type_to_str(int token_type) {
         return STRINGIFY(TOKEN_LIT_STR);
     case TOKEN_EOF:
         return STRINGIFY(TOKEN_EOF);
+    case TOKEN_NOP:
+        return STRINGIFY(TOKEN_NOP);
+        break;
     }
     return "UNKNOWN";
 }
 
-void
-token_free(struct token *t) {
-    str_free(&t->value);
-}
+Token::Token(const std::optional<std::string> &value, TokenType type)
+    : Value(value), Type(type) {}

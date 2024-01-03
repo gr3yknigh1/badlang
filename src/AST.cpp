@@ -112,8 +112,8 @@ ast_init(void) {
 // }
 
 void
-ast_parse(struct ast *ast, const struct token *tokens, u64 count) {
-    const struct token *curtoken = tokens;
+ast_parse(struct ast *ast, const struct Token *tokens, u64 count) {
+    const struct Token *curtoken = tokens;
 
     while (curtoken->type != TOKEN_EOF) {
         curtoken++;

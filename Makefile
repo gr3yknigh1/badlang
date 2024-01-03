@@ -20,8 +20,8 @@ default: all
 
 # ============== [ COMPILATION ] ==============
 #
-CC      := gcc
-CFLAGS  := -Wall -Wextra -pedantic -std=c2x -I $(SRCROOT)/include
+CC      := clang++
+CFLAGS  := -Wall -Wextra -pedantic -std=c++20 -I $(SRCROOT)/include
 LDFLAGS :=
 
 ifeq ($(BUILD_CONFIG), DEBUG)
@@ -54,22 +54,22 @@ BADCOMP_DIR   := $(SRCROOT)/src
 BADCOMP_BIN   := badcomp
 
 BADCOMP_SRCS  := \
-	$(BADCOMP_DIR)/ast.c \
-	$(BADCOMP_DIR)/badcomp.c \
-	$(BADCOMP_DIR)/fs.c \
-	$(BADCOMP_DIR)/lexer.c \
-	$(BADCOMP_DIR)/str.c \
-	$(BADCOMP_DIR)/memory.c \
-	$(BADCOMP_DIR)/token.c
+	$(BADCOMP_DIR)/ast.cpp \
+	$(BADCOMP_DIR)/badcomp.cpp \
+	$(BADCOMP_DIR)/fs.cpp \
+	$(BADCOMP_DIR)/lexer.cpp \
+	$(BADCOMP_DIR)/str.cpp \
+	$(BADCOMP_DIR)/memory.cpp \
+	$(BADCOMP_DIR)/Token.cpp
 
-BADCOMP_OBJS  := $(patsubst $(BADCOMP_DIR)/%.c, $(BADCOMP_DIR)/%.o, $(BADCOMP_SRCS))
+BADCOMP_OBJS  := $(patsubst $(BADCOMP_DIR)/%.cpp, $(BADCOMP_DIR)/%.o, $(BADCOMP_SRCS))
 
 
 $(BADCOMP_BIN): $(BADCOMP_OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
 
 
-$(BADCOMP_DIR)/%.o: $(BADCOMP_DIR)/%.c
+$(BADCOMP_DIR)/%.o: $(BADCOMP_DIR)/%.cpp
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 
@@ -77,33 +77,10 @@ ALL     += $(BADCOMP_BIN)
 CLEAN   += $(BADCOMP_OBJS) $(BADCOMP_BIN)
 
 
-# ================== [ UNIT TESTING ] ===================
-#
-#
-TEST_DIR  := $(BADCOMP_DIR)/tests
-TEST_SRCS :=
-
-TEST_BINS := $(patsubst $(TEST_DIR)/%.c, $(TEST_DIR)/%.bin, $(TEST_SRCS))
-
-CLEAN += $(TEST_BINS)
-
-TEST_CFLAGS := $(shell pkg-config --cflags --libs check)
-
-$(TEST_DIR)/%: $(TEST_DIR)/%.c $(BADCOMP_BIN)
-	$(CC) $(CFLAGS) $^ -o $@ $(TEST_CFLAGS)
-
-
 all: $(ALL)
 
 
 build: $(BADCOMP_BIN)
-
-
-tests: $(TEST_BINS)
-
-
-test: $(TEST_BINS)
-	@for test in $(TEST_BINS); do $$test ; done
 
 
 clean:

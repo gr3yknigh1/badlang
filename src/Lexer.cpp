@@ -1,5 +1,4 @@
 #include "badlang/lexer.h"
-#include "badlang/str.h"
 #include "badlang/token.h"
 
 #include <ctype.h>
@@ -35,8 +34,8 @@ lexer_is_source_end(const struct lexer *lexer) {
 }
 
 u64
-lexer_parse(struct lexer *lexer, struct token *tokens) {
-    struct token *curtoken = tokens;
+lexer_parse(struct lexer *lexer, struct Token *tokens) {
+    struct Token *curtoken = tokens;
 
     while (!lexer_is_source_end(lexer)) {
         lexer_skipwhitespace(lexer);
@@ -94,7 +93,7 @@ lexer_parse(struct lexer *lexer, struct token *tokens) {
     return curtoken - tokens;
 }
 
-struct token
+struct Token
 lexer_parse_id(struct lexer *lexer) {
 
     const char *id_begin = lexer->source + lexer->pos;
@@ -108,7 +107,7 @@ lexer_parse_id(struct lexer *lexer) {
     return token_init(str_init_1(id_begin, id_end - id_begin), TOKEN_ID);
 }
 
-struct token
+struct Token
 lexer_parse_num(struct lexer *lexer) {
 
     const char *id_begin = lexer->source + lexer->pos;

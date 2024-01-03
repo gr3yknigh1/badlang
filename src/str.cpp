@@ -7,7 +7,7 @@
 struct str
 str_init(void) {
     return (struct str){
-        .buf = null,
+        .buf = nullptr,
         .len = 0,
     };
 }

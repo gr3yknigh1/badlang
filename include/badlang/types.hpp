@@ -1,8 +1,6 @@
 #ifndef BADLANG_TYPES_H_
 #define BADLANG_TYPES_H_
 
-#define null ((void *)0)
-
 typedef signed long i64;
 typedef signed int i32;
 typedef signed short i16;
