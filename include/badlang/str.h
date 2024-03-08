@@ -1,7 +1,7 @@
 #ifndef BADLANG_STR_H_
 #define BADLANG_STR_H_
 
-#include "badlang/types.h"
+#include <nostdlib/types.h>
 
 struct str {
     char *buf;

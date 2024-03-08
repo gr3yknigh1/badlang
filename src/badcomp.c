@@ -7,16 +7,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <nostdlib/bits.h>
+#include <nostdlib/fs.h>
+#include <nostdlib/memory.h>
+#include <nostdlib/types.h>
+
 #include "badlang/array.h"
 #include "badlang/ast.h"
-#include "badlang/bits.h"
-#include "badlang/fs.h"
 #include "badlang/lexer.h"
 #include "badlang/logs.h"
-#include "badlang/memory.h"
 #include "badlang/rc.h"
 #include "badlang/str.h"
-#include "badlang/types.h"
 
 #define SOURCES_MAX_COUNT 32
 #define TOKENS_MAX_COUNT 1024
@@ -32,6 +33,17 @@ static const struct option LONG_OPTS[] = {
 
 static const char *SHORT_OPTS = "h";
 
+static unsigned long
+fs_file_size(FILE *fd) {
+    unsigned long size = 0;
+
+    fseek(fd, 0, SEEK_END);
+    size = ftell(fd);
+    fseek(fd, 0, SEEK_SET);
+
+    return size;
+}
+
 static enum rc
 badlang_compile(const char *source, size_t size) {
     struct lexer lexer = lexer_init(source, size);
@@ -39,7 +51,8 @@ badlang_compile(const char *source, size_t size) {
     u64 tokens_count = lexer_parse(&lexer, tokens);
 
     struct ast ast = ast_init();
-    struct ast_node ast_root = ast_node_init(AST_MODULE, null, null, null);
+    struct ast_node ast_root =
+        ast_node_init(AST_MODULE, nullptr, nullptr, nullptr);
     ast_parse(&ast, tokens, tokens_count);
 
     ast_node_print(&ast_root, NULL, false);
@@ -49,7 +62,7 @@ badlang_compile(const char *source, size_t size) {
     while (token->type != TOKEN_EOF) {
 
         token_value = realloc(token_value, token->value.len + 1);
-        memory_copy(token_value, token->value.buf, token->value.len);
+        noc_memory_copy(token_value, token->value.buf, token->value.len);
         token_value[token->value.len] = '\0';
 
         printf("Token(value=[%s] type=%s)\n", token_value,
@@ -59,15 +72,20 @@ badlang_compile(const char *source, size_t size) {
         token++;
     }
 
-    free_if_not_null(token_value);
-    free_if_not_null(tokens);
+    if (token_value == nullptr) {
+        free(token_value);
+    }
+
+    if (tokens == nullptr) {
+        free(token_value);
+    }
 
     return RC_OK;
 }
 
 static enum rc
 badlang_compile_file(const char *source_file) {
-    if (!fs_exists(source_file)) {
+    if (!noc_fs_is_exists(source_file)) {
         return RC_FILE_NOT_FOUND;
     }
 
@@ -116,7 +134,7 @@ main(int argc, char *const *argv) {
         IF_NOT_OK(badlang_compile_file(source_file), comp_rc) {
             LOG_ERROR("Failed to compile file: file=%s rc=%i\n", source_file,
                       comp_rc);
-            return RC_FAIL;
+            return RC_ERR;
         }
     }
 

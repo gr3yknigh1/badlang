@@ -2,7 +2,8 @@
 #define BADLANG_LEXER_H_
 
 #include "badlang/token.h"
-#include "badlang/types.h"
+
+#include <nostdlib/types.h>
 
 struct lexer {
     const char *source;

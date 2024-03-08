@@ -4,7 +4,7 @@
 enum rc {
     RC_END = -1,
     RC_OK = 0,
-    RC_FAIL = 1,
+    RC_ERR = 1,
 
     RC_FILE_NOT_FOUND,
     RC_FILE_FAIL_TO_OPEN,

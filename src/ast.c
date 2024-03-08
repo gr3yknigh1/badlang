@@ -1,10 +1,10 @@
 #include "badlang/ast.h"
 
-#include <stdio.h>
+#include <nostdlib/types.h>
+#include <nostdlib/macros.h>
+#include <nostdlib/memory.h>
 
-#include "badlang/marcos.h"
-#include "badlang/memory.h"
-#include "badlang/types.h"
+#include <stdio.h>
 
 struct ast_node_trunk
 ast_node_trunk_init(struct ast_node_trunk *prev, const char *str) {
@@ -16,7 +16,7 @@ ast_node_trunk_init(struct ast_node_trunk *prev, const char *str) {
 
 void
 ast_node_trunk_print(const struct ast_node_trunk *trunk) {
-    if (trunk == NULL) {
+    if (trunk == nullptr) {
         return;
     }
     ast_node_trunk_print(trunk->prev);
@@ -26,7 +26,7 @@ ast_node_trunk_print(const struct ast_node_trunk *trunk) {
 void
 ast_node_print(const struct ast_node *root, struct ast_node_trunk *prev,
                bool is_left) {
-    if (root == null) {
+    if (root == nullptr) {
         return;
     }
 
@@ -47,9 +47,9 @@ ast_node_print(const struct ast_node *root, struct ast_node_trunk *prev,
 
     ast_node_trunk_print(&trunk);
 
-    if (root->value != null) {
+    if (root->value != nullptr) {
         char value[root->value->len + 1];
-        memory_copy(value, root->value->buf, root->value->len);
+        noc_memory_copy(value, root->value->buf, root->value->len);
 
         printf(" %s(%s)\n", ast_node_type_to_str(root->type), value);
     } else {
@@ -103,7 +103,7 @@ ast_node_init(enum ast_node_type type, const struct str* value, struct ast_node 
 struct ast
 ast_init(void) {
     return (struct ast){
-        .root = null,
+        .root = nullptr,
     };
 }
 

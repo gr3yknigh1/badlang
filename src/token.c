@@ -1,5 +1,7 @@
 #include "badlang/token.h"
-#include "badlang/marcos.h"
+
+#include <nostdlib/macros.h>
+
 #include "badlang/str.h"
 
 struct token

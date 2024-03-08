@@ -17,7 +17,7 @@ default: all
 
 CC      := gcc
 CFLAGS  := -Wall -Wextra -pedantic -std=c2x -I $(SRCROOT)/include
-LDFLAGS :=
+LDFLAGS := -lnoc
 
 ifeq ($(BUILD_CONFIG), DEBUG)
     CFLAGS += -O0 -g -D CONFIG_DEBUG
@@ -47,17 +47,15 @@ BADCOMP_BIN   := badcomp
 BADCOMP_SRCS  := \
 	$(BADCOMP_DIR)/ast.c \
 	$(BADCOMP_DIR)/badcomp.c \
-	$(BADCOMP_DIR)/fs.c \
 	$(BADCOMP_DIR)/lexer.c \
 	$(BADCOMP_DIR)/str.c \
-	$(BADCOMP_DIR)/memory.c \
 	$(BADCOMP_DIR)/token.c
 
 BADCOMP_OBJS  := $(patsubst $(BADCOMP_DIR)/%.c, $(BADCOMP_DIR)/%.o, $(BADCOMP_SRCS))
 
 
 $(BADCOMP_BIN): $(BADCOMP_OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
 
 $(BADCOMP_DIR)/%.o: $(BADCOMP_DIR)/%.c
