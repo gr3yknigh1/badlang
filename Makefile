@@ -1,5 +1,3 @@
-
-
 PHONY := \
 	default all build \
 	format fmt lint \
@@ -17,9 +15,6 @@ SRCROOT  := $(THIS_MAKE_FILE_DIR)
 
 default: all
 
-
-# ============== [ COMPILATION ] ==============
-#
 CC      := gcc
 CFLAGS  := -Wall -Wextra -pedantic -std=c2x -I $(SRCROOT)/include
 LDFLAGS :=
@@ -43,13 +38,9 @@ ifeq ($(USE_SANITIZE), LEAK)
 endif
 
 
-include $(SRCROOT)/make/os.mk
-include $(SRCROOT)/make/tools.mk
+include $(SRCROOT)/mk/os.mk
+include $(SRCROOT)/mk/tools.mk
 
-
-# ================== [ BADCOMP ] ===================
-#
-#
 BADCOMP_DIR   := $(SRCROOT)/src
 BADCOMP_BIN   := badcomp
 
@@ -77,33 +68,10 @@ ALL     += $(BADCOMP_BIN)
 CLEAN   += $(BADCOMP_OBJS) $(BADCOMP_BIN)
 
 
-# ================== [ UNIT TESTING ] ===================
-#
-#
-TEST_DIR  := $(BADCOMP_DIR)/tests
-TEST_SRCS :=
-
-TEST_BINS := $(patsubst $(TEST_DIR)/%.c, $(TEST_DIR)/%.bin, $(TEST_SRCS))
-
-CLEAN += $(TEST_BINS)
-
-TEST_CFLAGS := $(shell pkg-config --cflags --libs check)
-
-$(TEST_DIR)/%: $(TEST_DIR)/%.c $(BADCOMP_BIN)
-	$(CC) $(CFLAGS) $^ -o $@ $(TEST_CFLAGS)
-
-
 all: $(ALL)
 
 
 build: $(BADCOMP_BIN)
-
-
-tests: $(TEST_BINS)
-
-
-test: $(TEST_BINS)
-	@for test in $(TEST_BINS); do $$test ; done
 
 
 clean:
