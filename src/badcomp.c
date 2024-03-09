@@ -22,13 +22,13 @@
 #define SOURCES_MAX_COUNT 32
 #define TOKENS_MAX_COUNT 1024
 
-enum opt {
-    OPT_NONE = MKFLAG(0),
-    OPT_HELP = MKFLAG(1),
-};
+typedef int optmask_t;
+
+#define OPT_NONE MKFLAG(0)
+#define OPT_HELP MKFLAG(1)
 
 static const struct option LONG_OPTS[] = {
-    {"help", false, NULL, OPT_HELP},
+    {"help", false, nullptr, OPT_HELP},
 };
 
 static const char *SHORT_OPTS = "h";
@@ -44,21 +44,20 @@ fs_file_size(FILE *fd) {
     return size;
 }
 
-static enum rc
+static rc_t
 badlang_compile(const char *source, size_t size) {
-    struct lexer lexer = lexer_init(source, size);
-    struct token *tokens = calloc(TOKENS_MAX_COUNT, sizeof(struct token));
+    lexer_t lexer = lexer_init(source, size);
+    token_t *tokens = calloc(TOKENS_MAX_COUNT, sizeof(token_t));
     u64 tokens_count = lexer_parse(&lexer, tokens);
 
-    struct ast ast = ast_init();
-    struct ast_node ast_root =
-        ast_node_init(AST_MODULE, nullptr, nullptr, nullptr);
+    ast_t ast = ast_init();
+    ast_node_t ast_root = ast_node_init(AST_MODULE, nullptr, nullptr, nullptr);
     ast_parse(&ast, tokens, tokens_count);
 
-    ast_node_print(&ast_root, NULL, false);
+    ast_node_print(&ast_root, nullptr, false);
 
-    struct token *token = tokens;
-    char *token_value = NULL;
+    token_t *token = tokens;
+    char *token_value = nullptr;
     while (token->type != TOKEN_EOF) {
 
         token_value = realloc(token_value, token->value.len + 1);
@@ -83,7 +82,7 @@ badlang_compile(const char *source, size_t size) {
     return RC_OK;
 }
 
-static enum rc
+static rc_t
 badlang_compile_file(const char *source_file) {
     if (!noc_fs_is_exists(source_file)) {
         return RC_FILE_NOT_FOUND;
@@ -91,7 +90,7 @@ badlang_compile_file(const char *source_file) {
 
     FILE *f = fopen(source_file, "r");
 
-    if (f == NULL) {
+    if (f == nullptr) {
         return RC_FILE_FAIL_TO_OPEN;
     }
 
@@ -100,7 +99,7 @@ badlang_compile_file(const char *source_file) {
     fread(file_content, file_size, 1, f);
     file_content[file_size] = '\0';
 
-    enum rc rc = badlang_compile(file_content, file_size);
+    rc_t rc = badlang_compile(file_content, file_size);
 
     free(file_content);
 
@@ -110,7 +109,7 @@ badlang_compile_file(const char *source_file) {
 int
 main(int argc, char *const *argv) {
     int opt_value = 0, opt_index = 0;
-    enum opt optmask = OPT_NONE;
+    optmask_t optmask = OPT_NONE;
 
     while ((opt_value = getopt_long(argc, argv, SHORT_OPTS, LONG_OPTS,
                                     &opt_index)) != RC_END) {
@@ -123,7 +122,7 @@ main(int argc, char *const *argv) {
         }
     }
 
-    ARRAY(sources, SOURCES_MAX_COUNT, const char *) = {0};
+    ARRAY(const char *, SOURCES_MAX_COUNT) sources = {0};
 
     for (const char *arg = argv[optind]; optind < argc; arg = argv[++optind]) {
         ARRAY_ADD(sources, arg);
@@ -131,9 +130,9 @@ main(int argc, char *const *argv) {
 
     ARRAY_FOR(sources, idx) {
         const char *source_file = ARRAY_GET(sources, idx);
-        IF_NOT_OK(badlang_compile_file(source_file), comp_rc) {
+        IF_NOT_OK(badlang_compile_file(source_file), compile_rc) {
             LOG_ERROR("Failed to compile file: file=%s rc=%i\n", source_file,
-                      comp_rc);
+                      compile_rc);
             return RC_ERR;
         }
     }

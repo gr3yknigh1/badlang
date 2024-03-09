@@ -4,14 +4,13 @@
 #ifndef BADLANG_ARRAY_H_
 #define BADLANG_ARRAY_H_
 
-#define ARRAY(__NAME, __SIZE, __TYPE)                                          \
+#define ARRAY(__TYPE, __SIZE)                                                  \
     struct {                                                                   \
-        __TYPE items[(__SIZE)];                                               \
-        unsigned long length;                                                 \
-    } __NAME
+        __TYPE items[(__SIZE)];                                                \
+        unsigned long length;                                                  \
+    }
 
-#define ARRAY_ADD(__ARRAY, __ITEM)                                             \
-    (__ARRAY).items[(__ARRAY).length++] = __ITEM
+#define ARRAY_ADD(__ARRAY, __ITEM) (__ARRAY).items[(__ARRAY).length++] = __ITEM
 
 #define ARRAY_LEN(__ARRAY) ((__ARRAY).length)
 

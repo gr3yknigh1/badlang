@@ -6,39 +6,39 @@
 #include <nostdlib/memory.h>
 #include <nostdlib/types.h>
 
-struct str
+str_t
 str_init(void) {
-    return (struct str){
+    return (str_t){
         .buf = nullptr,
         .len = 0,
     };
 }
 
-struct str
+str_t
 str_init_0(const char *str) {
     u64 len = str_len(str);
     char *buf = malloc(len * sizeof(char));
     noc_memory_copy(buf, str, len);
 
-    return (struct str){
+    return (str_t){
         .buf = buf,
         .len = len,
     };
 }
 
-struct str
+str_t
 str_init_1(const void *src, usize amount) {
     char *buf = malloc(amount * sizeof(char));
     noc_memory_copy(buf, src, amount);
 
-    return (struct str){
+    return (str_t){
         .buf = buf,
         .len = amount,
     };
 }
 
 void
-str_concat(struct str *str, const char *other) {
+str_concat(str_t *str, const char *other) {
     u64 other_len = str_len(other);
     u64 new_len = str->len + other_len;
 
@@ -48,7 +48,7 @@ str_concat(struct str *str, const char *other) {
 }
 
 void
-str_free(struct str *str) {
+str_free(str_t *str) {
     if (str->buf != nullptr) {
         free(str->buf);
     }

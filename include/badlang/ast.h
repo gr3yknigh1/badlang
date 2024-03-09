@@ -1,19 +1,20 @@
 #ifndef BADLANG_AST_H_
 #define BADLANG_AST_H_
 
+#include <nostdlib/types.h>
+
 #include "badlang/token.h"
 
-struct ast_node_trunk {
+typedef struct ast_node_trunk {
     struct ast_node_trunk *prev;
     const char *str;
-};
+} ast_node_trunk_t;
 
-struct ast_node_trunk ast_node_trunk_init(struct ast_node_trunk *prev,
-                                          const char *str);
+ast_node_trunk_t ast_node_trunk_init(ast_node_trunk_t *prev, const char *str);
 
-void ast_node_trunk_print(const struct ast_node_trunk *trunk);
+void ast_node_trunk_print(const ast_node_trunk_t *trunk);
 
-enum ast_node_type {
+typedef enum {
     AST_NOP,
 
     AST_MODULE,
@@ -28,30 +29,30 @@ enum ast_node_type {
 
     AST_DECL_FUNC,
     AST_EXPR_LITERAL,
-};
+} ast_node_type_t;
 
-const char *ast_node_type_to_str(enum ast_node_type ast_node_type);
+const char *ast_node_type_to_str(ast_node_type_t ast_node_type);
 
-struct ast_node {
-    enum ast_node_type type;
-    const struct str *value;
+typedef struct ast_node {
+    ast_node_type_t type;
+    const str_t *value;
 
     struct ast_node *left;
     struct ast_node *right;
-};
+} ast_node_t;
 
-void ast_node_print(const struct ast_node *root, struct ast_node_trunk *prev,
+void ast_node_print(const ast_node_t *root, ast_node_trunk_t *prev,
                     bool is_left);
 
-struct ast_node ast_node_init(enum ast_node_type type, const struct str* value, struct ast_node *left,
-                              struct ast_node *right);
+ast_node_t ast_node_init(ast_node_type_t type, const str_t *value,
+                         ast_node_t *left, ast_node_t *right);
 
-struct ast {
-    struct ast_node *root;
-};
+typedef struct {
+    ast_node_t *root;
+} ast_t;
 
-struct ast ast_init(void);
+ast_t ast_init(void);
 
-void ast_parse(struct ast *ast, const struct token *tokens, u64 count);
+void ast_parse(ast_t *ast, const token_t *tokens, u64 count);
 
 #endif // BADLANG_AST_H_

@@ -3,18 +3,18 @@
 
 #include <nostdlib/types.h>
 
-struct str {
+typedef struct {
     char *buf;
     u64 len;
-};
+} str_t;
 
-struct str str_init(void);
-struct str str_init_0(const char *str);
-struct str str_init_1(const void *src, usize amount);
+str_t str_init(void);
+str_t str_init_0(const char *str);
+str_t str_init_1(const void *src, usize amount);
 
-void str_concat(struct str *str, const char *other);
+void str_concat(str_t *str, const char *other);
 
-void str_free(struct str *str);
+void str_free(str_t *str);
 
 u64 str_len(const char *str);
 

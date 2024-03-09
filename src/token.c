@@ -5,7 +5,7 @@
 #include "badlang/str.h"
 
 struct token
-token_init(struct str value, enum token_type type) {
+token_init(str_t value, enum token_type type) {
     return (struct token){
         .value = value,
         .type = type,

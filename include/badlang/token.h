@@ -3,7 +3,7 @@
 
 #include "badlang/str.h"
 
-enum token_type {
+typedef enum {
     TOKEN_NOP,
     TOKEN_ID,
 
@@ -26,16 +26,16 @@ enum token_type {
     TOKEN_LIT_STR,
 
     TOKEN_EOF,
-};
+} token_type_t;
 
-struct token {
-    enum token_type type;
-    struct str value;
-};
+typedef struct {
+    token_type_t type;
+    str_t value;
+} token_t;
 
-struct token token_init(struct str value, enum token_type type);
+token_t token_init(str_t value, token_type_t type);
 
-void token_free(struct token *t);
+void token_free(token_t *t);
 
 const char *token_type_to_str(int token_type);
 

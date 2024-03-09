@@ -1,21 +1,21 @@
 #include "badlang/ast.h"
 
-#include <nostdlib/types.h>
 #include <nostdlib/macros.h>
 #include <nostdlib/memory.h>
+#include <nostdlib/types.h>
 
 #include <stdio.h>
 
-struct ast_node_trunk
-ast_node_trunk_init(struct ast_node_trunk *prev, const char *str) {
-    return (struct ast_node_trunk){
+ast_node_trunk_t
+ast_node_trunk_init(ast_node_trunk_t *prev, const char *str) {
+    return (ast_node_trunk_t){
         .prev = prev,
         .str = str,
     };
 }
 
 void
-ast_node_trunk_print(const struct ast_node_trunk *trunk) {
+ast_node_trunk_print(const ast_node_trunk_t *trunk) {
     if (trunk == nullptr) {
         return;
     }
@@ -24,14 +24,13 @@ ast_node_trunk_print(const struct ast_node_trunk *trunk) {
 }
 
 void
-ast_node_print(const struct ast_node *root, struct ast_node_trunk *prev,
-               bool is_left) {
+ast_node_print(const ast_node_t *root, ast_node_trunk_t *prev, bool is_left) {
     if (root == nullptr) {
         return;
     }
 
     const char *prev_str = "    ";
-    struct ast_node_trunk trunk = ast_node_trunk_init(prev, prev_str);
+    ast_node_trunk_t trunk = ast_node_trunk_init(prev, prev_str);
 
     ast_node_print(root->right, &trunk, true);
 
@@ -65,7 +64,7 @@ ast_node_print(const struct ast_node *root, struct ast_node_trunk *prev,
 }
 
 const char *
-ast_node_type_to_str(enum ast_node_type ast_node_type) {
+ast_node_type_to_str(ast_node_type_t ast_node_type) {
     switch (ast_node_type) {
     case AST_NOP:
         return STRINGIFY(AST_NOP);
@@ -89,10 +88,10 @@ ast_node_type_to_str(enum ast_node_type ast_node_type) {
     return "UNKNOWN";
 }
 
-struct ast_node
-ast_node_init(enum ast_node_type type, const struct str* value, struct ast_node *left,
-              struct ast_node *right) {
-    return (struct ast_node){
+ast_node_t
+ast_node_init(ast_node_type_t type, const str_t *value, ast_node_t *left,
+              ast_node_t *right) {
+    return (ast_node_t){
         .type = type,
         .value = value,
         .left = left,
@@ -100,20 +99,16 @@ ast_node_init(enum ast_node_type type, const struct str* value, struct ast_node 
     };
 }
 
-struct ast
+ast_t
 ast_init(void) {
-    return (struct ast){
+    return (ast_t){
         .root = nullptr,
     };
 }
 
-// static void ast_parse_block(struct ast *ast) {
-//
-// }
-
 void
-ast_parse(struct ast *ast, const struct token *tokens, u64 count) {
-    const struct token *curtoken = tokens;
+ast_parse(ast_t *ast, const token_t *tokens, u64 count) {
+    const token_t *curtoken = tokens;
 
     while (curtoken->type != TOKEN_EOF) {
         curtoken++;
