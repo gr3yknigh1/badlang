@@ -4,9 +4,9 @@
 
 #include "badlang/str.h"
 
-struct token
-token_init(str_t value, enum token_type type) {
-    return (struct token){
+token_t
+token_init(str_t value, token_type_t type) {
+    return (token_t){
         .value = value,
         .type = type,
     };
@@ -48,6 +48,6 @@ token_type_to_str(int token_type) {
 }
 
 void
-token_free(struct token *t) {
+token_free(token_t *t) {
     str_free(&t->value);
 }
