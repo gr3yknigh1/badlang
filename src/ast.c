@@ -70,19 +70,11 @@ ast_node_type_to_str(ast_node_type_t ast_node_type) {
         return STRINGIFY(AST_NOP);
     case AST_MODULE:
         return STRINGIFY(AST_MODULE);
-    case AST_OP_ID_ACCESS:
-        return STRINGIFY(AST_OP_ID_ACCESS);
-    case AST_OP_ASSIGNMENT:
-        return STRINGIFY(AST_OP_ASSIGNMENT);
-    case AST_COMP_ASSIGNMENT:
+    case AST_RETURN:
+        return STRINGIFY(AST_RETURN);
+    case AST_COMPTIME_ASSIGNMENT:
         return STRINGIFY(AST_COMP_ASSIGNMENT);
-    case AST_DECL_VAR:
-        return STRINGIFY(AST_DECL_VAR);
-    case AST_DECL_VAR_IMPL:
-        return STRINGIFY(AST_DECL_VAR_IMPL);
-    case AST_DECL_FUNC:
-        return STRINGIFY(AST_DECL_FUNC);
-    case AST_EXPR_LITERAL:
+    case AST_LITERAL:
         return STRINGIFY(AST_EXPR_LITERAL);
     }
     return "UNKNOWN";

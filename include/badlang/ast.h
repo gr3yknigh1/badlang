@@ -19,26 +19,32 @@ typedef enum {
 
     AST_MODULE,
 
-    AST_OP_ID_ACCESS,
-    AST_OP_ASSIGNMENT,
+    AST_RETURN,
+    AST_COMPTIME_ASSIGNMENT,
 
-    AST_COMP_ASSIGNMENT,
 
-    AST_DECL_VAR,
-    AST_DECL_VAR_IMPL, // NOTE: With type deduce
-
-    AST_DECL_FUNC,
-    AST_EXPR_LITERAL,
+    AST_LITERAL,
 } ast_node_type_t;
 
 const char *ast_node_type_to_str(ast_node_type_t ast_node_type);
 
 typedef struct ast_node {
     ast_node_type_t type;
+
     const str_t *value;
 
-    struct ast_node *left;
-    struct ast_node *right;
+    union {
+        struct {
+            struct ast_node *left;
+            struct ast_node *middle;
+            struct ast_node *right;
+        };
+        struct {
+            struct ast_node *nodes;
+            u64 nodes_count;
+            u64 nodes_capacity;
+        };
+    };
 } ast_node_t;
 
 void ast_node_print(const ast_node_t *root, ast_node_trunk_t *prev,

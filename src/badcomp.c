@@ -5,7 +5,6 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include <nostdlib/bits.h>
 #include <nostdlib/fs.h>
